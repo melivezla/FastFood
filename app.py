@@ -62,10 +62,12 @@ if user_input:
 
     # --- Validación de temas de Bembos ---
     temas_validos = [
-        "bembos", "hamburguesa", "combo", "papas", "bebida", "postre",
-        "menú", "ingredientes", "promoción", "calorías", "nutrición",
-        "vegetariano", "sin gluten", "sin lactosa", "carne", "pollo"
-    ]
+    "bembos", "hamburguesa", "combo", "papas", "bebida", "postre", "helado", "ají", "salsas",
+    "menú", "ingredientes", "promoción", "oferta", "precio", "costo", "delivery", "nutrición",
+    "calorías", "valor nutricional", "vegetariano", "sin gluten", "sin lactosa",
+    "carne", "pollo", "res", "doble", "cheddar", "parrilla", "bacon", "tocino", "refresco"
+]
+
 
     # --- Si no está relacionado con Bembos
     if not any(re.search(palabra, user_input, re.IGNORECASE) for palabra in temas_validos):
