@@ -52,10 +52,24 @@ for part in st.session_state.chat.history[1:]:
         st.chat_message("assistant").markdown(message)
 
 
+import re  # asegúrate de tener este import arriba
+
 user_input = st.chat_input("¿Qué te apetece comer hoy?")
 
 if user_input:
     st.chat_message("user").markdown(user_input)
-    st.session_state.chat.send_message(user_input)
-    response = st.session_state.chat.last.text
-    st.chat_message("assistant").markdown(response)
+
+    # --- Validación: solo responder si el mensaje está relacionado con Bembos ---
+    temas_validos = [
+        "bembos", "hamburguesa", "combo", "papas", "bebida", "postre",
+        "menú", "ingredientes", "promoción", "calorías", "nutrición",
+        "vegetariano", "sin gluten", "sin lactosa", "carne", "pollo"
+    ]
+
+    if not any(re.search(palabra, user_input, re.IGNORECASE) for palabra in temas_validos):
+        respuesta = "Lo siento, no tengo información suficiente para ayudarte con esa solicitud. Solo puedo responder sobre productos y temas relacionados con **Bembos Perú**. 🍔"
+        st.chat_message("assistant").markdown(respuesta)
+    else:
+        st.session_state.chat.send_message(user_input)
+        response = st.session_state.chat.last.text
+        st.chat_message("assistant").markdown(response)
