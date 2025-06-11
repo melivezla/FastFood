@@ -4,12 +4,17 @@ import os
 from dotenv import load_dotenv
 import re  
 
-load_dotenv()
+# Intentar leer desde variable de entorno (Render), o desde .env (local)
 api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-    st.error("No se encontró la clave API de Gemini. Usa un archivo .env.")
+    load_dotenv()
+    api_key = os.getenv("GEMINI_API_KEY")
+
+if not api_key:
+    st.error("No se encontró la clave API de Gemini. Configúrala en Render como variable de entorno, o crea un archivo .env local con GEMINI_API_KEY.")
     st.stop()
+
 
 # --- Validación de API Key ---
 genai.configure(api_key=api_key)
