@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+import re  
 
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
@@ -52,23 +53,37 @@ for part in st.session_state.chat.history[1:]:
         st.chat_message("assistant").markdown(message)
 
 
-import re  # asegúrate de tener este import arriba
+
 
 user_input = st.chat_input("¿Qué te apetece comer hoy?")
 
 if user_input:
     st.chat_message("user").markdown(user_input)
 
-    # --- Validación: solo responder si el mensaje está relacionado con Bembos ---
+    # --- Validación de temas de Bembos ---
     temas_validos = [
         "bembos", "hamburguesa", "combo", "papas", "bebida", "postre",
         "menú", "ingredientes", "promoción", "calorías", "nutrición",
         "vegetariano", "sin gluten", "sin lactosa", "carne", "pollo"
     ]
 
+    # --- Si no está relacionado con Bembos
     if not any(re.search(palabra, user_input, re.IGNORECASE) for palabra in temas_validos):
         respuesta = "Lo siento, no tengo información suficiente para ayudarte con esa solicitud. Solo puedo responder sobre productos y temas relacionados con **Bembos Perú**. 🍔"
         st.chat_message("assistant").markdown(respuesta)
+
+    # --- Si preguntan por calorías o nutrición, mostrar links directamente
+    elif re.search(r"(calorías|calorias|nutrición|nutricional)", user_input, re.IGNORECASE):
+        st.chat_message("assistant").markdown("""
+Lamentablemente, no tengo disponible el dato exacto de calorías en este momento.  
+Sin embargo, te recomiendo consultar estos enlaces oficiales:
+
+👉 [Menú y productos en la web de Bembos](https://www.bembos.com.pe/menu)  
+📱 [App en Google Play](https://play.google.com/store/apps/details?id=pe.bembos.app&hl=es&gl=US)  
+📱 [App en iOS (Apple)](https://apps.apple.com/pe/app/bembos/id6443560162)
+        """)
+
+    # --- Si pasa el filtro, enviar al modelo
     else:
         st.session_state.chat.send_message(user_input)
         response = st.session_state.chat.last.text
